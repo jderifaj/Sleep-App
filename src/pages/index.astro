@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DateHeader from '../components/DateHeader.astro';
+import FoodLog from '../components/FoodLog';
+import NightActivity from '../components/NightActivity';
+import Exercise from '../components/Exercise';
+import SleepPattern from '../components/SleepPattern';
+import { todayKey } from '../lib/date';
+import { getEntry } from '../lib/sheets';
+
+const dateKey = todayKey();
+const entry = await getEntry(dateKey);
+---
+
+<BaseLayout title="Sleep Tracker">
+  <DateHeader date={dateKey} />
+  <FoodLog client:load initialValue={entry.food_log} />
+  <NightActivity client:load initialActivity={entry.night_activity} initialBedtime={entry.bedtime} />
+  <Exercise
+    client:load
+    initialExercised={entry.exercised}
+    initialActivity={entry.exercise_activity}
+    initialTime={entry.exercise_time}
+  />
+  <SleepPattern
+    client:load
+    initialTrouble={entry.trouble_falling_asleep}
+    initialWoke={entry.woke_in_night}
+    initialWakeCount={entry.wake_count}
+  />
+</BaseLayout>

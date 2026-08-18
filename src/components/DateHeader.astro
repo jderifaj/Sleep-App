@@ -1,0 +1,32 @@
+---
+interface Props {
+  date: string;
+}
+const { date } = Astro.props;
+const formatted = new Date(`${date}T00:00:00`).toLocaleDateString(undefined, {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<header class="row" style="justify-content: space-between; align-items: baseline;">
+  <div>
+    <h1>Sleep Tracker</h1>
+    <p style="color: var(--muted); margin: 0;">{formatted}</p>
+  </div>
+  <form method="POST" action="/api/logout" id="logout-form">
+    <button type="submit" style="background: transparent; color: var(--muted); font-weight: 400; border: 1px solid var(--border);">
+      Log out
+    </button>
+  </form>
+</header>
+
+<script>
+  const form = document.getElementById('logout-form');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/login';
+  });
+</script>
