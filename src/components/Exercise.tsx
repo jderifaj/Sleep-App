@@ -4,13 +4,13 @@ import { statusText, useSaveStatus } from './useSaveStatus';
 interface Props {
   initialExercised: boolean;
   initialActivity: string;
-  initialTime: string;
+  initialMinutes: number;
 }
 
-export default function Exercise({ initialExercised, initialActivity, initialTime }: Props) {
+export default function Exercise({ initialExercised, initialActivity, initialMinutes }: Props) {
   const [exercised, setExercised] = useState(initialExercised);
   const [activity, setActivity] = useState(initialActivity);
-  const [time, setTime] = useState(initialTime);
+  const [minutes, setMinutes] = useState(initialMinutes);
   const { status, save } = useSaveStatus();
 
   return (
@@ -34,8 +34,14 @@ export default function Exercise({ initialExercised, initialActivity, initialTim
             onChange={(e) => setActivity(e.target.value)}
             placeholder="e.g. Running, yoga, weights"
           />
-          <label htmlFor="exercise-time">Time (optional)</label>
-          <input id="exercise-time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+          <label htmlFor="exercise-minutes">Duration (minutes, optional)</label>
+          <input
+            id="exercise-minutes"
+            type="number"
+            min={0}
+            value={minutes}
+            onChange={(e) => setMinutes(Number(e.target.value))}
+          />
         </>
       )}
       <div className="row" style={{ justifyContent: 'space-between', marginTop: '0.6rem' }}>
@@ -45,7 +51,7 @@ export default function Exercise({ initialExercised, initialActivity, initialTim
             save('/api/save-exercise', {
               exercised,
               exercise_activity: activity,
-              exercise_time: time,
+              exercise_minutes: minutes,
             })
           }
         >

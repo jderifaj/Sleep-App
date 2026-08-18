@@ -5,7 +5,7 @@ export interface DailyEntry {
   bedtime: string;
   exercised: boolean;
   exercise_activity: string;
-  exercise_time: string;
+  exercise_minutes: number;
   trouble_falling_asleep: boolean;
   woke_in_night: boolean;
   wake_count: number;
@@ -18,7 +18,7 @@ export const EMPTY_ENTRY: Omit<DailyEntry, 'date'> = {
   bedtime: '',
   exercised: false,
   exercise_activity: '',
-  exercise_time: '',
+  exercise_minutes: 0,
   trouble_falling_asleep: false,
   woke_in_night: false,
   wake_count: 0,

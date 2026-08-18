@@ -54,7 +54,7 @@ export async function getEntry(dateKey: string): Promise<DailyEntry> {
     bedtime: row.get('bedtime') ?? '',
     exercised: toBool(row.get('exercised')),
     exercise_activity: row.get('exercise_activity') ?? '',
-    exercise_time: row.get('exercise_time') ?? '',
+    exercise_minutes: toNum(row.get('exercise_minutes')),
     trouble_falling_asleep: toBool(row.get('trouble_falling_asleep')),
     woke_in_night: toBool(row.get('woke_in_night')),
     wake_count: toNum(row.get('wake_count')),
@@ -71,7 +71,7 @@ export async function upsertEntry(
   let row = rows.find((r) => r.get('date') === dateKey);
 
   if (!row) {
-    row = await sheet.addRow({ date: dateKey });
+    row = await sheet.addRow({ date: dateKey }, { raw: true });
   }
 
   for (const [key, value] of Object.entries(patch)) {
@@ -79,5 +79,5 @@ export async function upsertEntry(
   }
   row.set('last_updated', new Date().toISOString());
 
-  await row.save();
+  await row.save({ raw: true });
 }

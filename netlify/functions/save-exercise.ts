@@ -11,13 +11,13 @@ export default async (req: Request, _context: Context) => {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const body: { exercised?: boolean; exercise_activity?: string; exercise_time?: string } =
+  const body: { exercised?: boolean; exercise_activity?: string; exercise_minutes?: number } =
     await req.json();
 
   await upsertEntry(todayKey(), {
     exercised: Boolean(body.exercised),
     exercise_activity: body.exercised ? (body.exercise_activity ?? '') : '',
-    exercise_time: body.exercised ? (body.exercise_time ?? '') : '',
+    exercise_minutes: body.exercised ? Number(body.exercise_minutes) || 0 : 0,
   });
 
   return new Response(JSON.stringify({ ok: true }), {
