@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { statusText, useSaveStatus } from './useSaveStatus';
 
 interface Props {
+  date: string;
   initialValue: string;
 }
 
-export default function Notes({ initialValue }: Props) {
+export default function Notes({ date, initialValue }: Props) {
   const [value, setValue] = useState(initialValue);
   const { status, save } = useSaveStatus();
 
@@ -18,7 +19,9 @@ export default function Notes({ initialValue }: Props) {
         placeholder="Anything else worth remembering about today..."
       />
       <div className="row" style={{ justifyContent: 'space-between', marginTop: '0.6rem' }}>
-        <button disabled={status === 'saving'} onClick={() => save('/api/save-notes', { notes: value })}>
+        <button
+          disabled={status === 'saving'}
+          onClick={() => save('/api/save-notes', { date, notes: value })}>
           Save
         </button>
         <span className={`status ${status === 'error' ? 'error' : ''}`}>{statusText(status)}</span>

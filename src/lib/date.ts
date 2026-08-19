@@ -15,6 +15,19 @@ export function formatDateKey(dateKey: string): string {
   });
 }
 
+export function formatShortDate(dateKey: string): string {
+  return new Date(`${dateKey}T00:00:00`).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+export function addDays(dateKey: string, delta: number): string {
+  const d = new Date(`${dateKey}T00:00:00`);
+  d.setDate(d.getDate() + delta);
+  return d.toLocaleDateString('en-CA');
+}
+
 export function formatTime(value: string): string {
   const [h, m] = value.split(':').map(Number);
   if (Number.isNaN(h) || Number.isNaN(m)) return value;

@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DayView from '../../components/DayView.astro';
+import { isValidDateKey } from '../../lib/date';
+
+const { date } = Astro.params;
+if (!date || !isValidDateKey(date)) {
+  return Astro.redirect('/');
+}
+---
+
+<BaseLayout title={`${date} — Sleep Tracker`}>
+  <DayView dateKey={date} />
+</BaseLayout>

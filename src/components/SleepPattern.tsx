@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { statusText, useSaveStatus } from './useSaveStatus';
 
 interface Props {
+  date: string;
   initialTrouble: boolean;
   initialWoke: boolean;
   initialWakeCount: number;
 }
 
-export default function SleepPattern({ initialTrouble, initialWoke, initialWakeCount }: Props) {
+export default function SleepPattern({ date, initialTrouble, initialWoke, initialWakeCount }: Props) {
   const [trouble, setTrouble] = useState(initialTrouble);
   const [woke, setWoke] = useState(initialWoke);
   const [wakeCount, setWakeCount] = useState(initialWakeCount);
@@ -62,6 +63,7 @@ export default function SleepPattern({ initialTrouble, initialWoke, initialWakeC
           disabled={status === 'saving'}
           onClick={() =>
             save('/api/save-sleep', {
+              date,
               trouble_falling_asleep: trouble,
               woke_in_night: woke,
               wake_count: wakeCount,

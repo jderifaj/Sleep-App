@@ -1,5 +1,5 @@
 import type { Context } from '@netlify/functions';
-import { todayKey } from '../../src/lib/date';
+import { isValidDateKey, todayKey } from '../../src/lib/date';
 import { upsertEntry } from '../../src/lib/sheets';
 
 export default async (req: Request, _context: Context) => {
@@ -7,9 +7,10 @@ export default async (req: Request, _context: Context) => {
     return new Response('Method Not Allowed', { status: 405 });
   }
 
-  const body: { night_activity?: string; bedtime?: string } = await req.json();
+  const body: { date?: string; night_activity?: string; bedtime?: string } = await req.json();
+  const dateKey = body.date && isValidDateKey(body.date) ? body.date : todayKey();
 
-  await upsertEntry(todayKey(), {
+  await upsertEntry(dateKey, {
     night_activity: body.night_activity ?? '',
     bedtime: body.bedtime ?? '',
   });

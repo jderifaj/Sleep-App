@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { statusText, useSaveStatus } from './useSaveStatus';
 
 interface Props {
+  date: string;
   initialExercised: boolean;
   initialActivity: string;
   initialMinutes: number;
 }
 
-export default function Exercise({ initialExercised, initialActivity, initialMinutes }: Props) {
+export default function Exercise({ date, initialExercised, initialActivity, initialMinutes }: Props) {
   const [exercised, setExercised] = useState(initialExercised);
   const [activity, setActivity] = useState(initialActivity);
   const [minutes, setMinutes] = useState(initialMinutes);
@@ -49,6 +50,7 @@ export default function Exercise({ initialExercised, initialActivity, initialMin
           disabled={status === 'saving'}
           onClick={() =>
             save('/api/save-exercise', {
+              date,
               exercised,
               exercise_activity: activity,
               exercise_minutes: minutes,

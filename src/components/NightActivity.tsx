@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { statusText, useSaveStatus } from './useSaveStatus';
 
 interface Props {
+  date: string;
   initialActivity: string;
   initialBedtime: string;
 }
 
-export default function NightActivity({ initialActivity, initialBedtime }: Props) {
+export default function NightActivity({ date, initialActivity, initialBedtime }: Props) {
   const [activity, setActivity] = useState(initialActivity);
   const [bedtime, setBedtime] = useState(initialBedtime);
   const { status, save } = useSaveStatus();
@@ -24,7 +25,7 @@ export default function NightActivity({ initialActivity, initialBedtime }: Props
       <div className="row" style={{ justifyContent: 'space-between', marginTop: '0.6rem' }}>
         <button
           disabled={status === 'saving'}
-          onClick={() => save('/api/save-night', { night_activity: activity, bedtime })}
+          onClick={() => save('/api/save-night', { date, night_activity: activity, bedtime })}
         >
           Save
         </button>

@@ -50,7 +50,9 @@ const populated = entries.filter(hasData);
     {
       populated.map((entry) => (
         <article class="entry">
-          <p class="entry-date">{formatDateKey(entry.date)}</p>
+          <p class="entry-date">
+            <a href={`/day/${entry.date}`} class="entry-date-link">{formatDateKey(entry.date)}</a>
+          </p>
           {summary(entry).length > 0 && <p class="entry-summary">{summary(entry).join(' · ')}</p>}
           {entry.food_log && (
             <p class="entry-field">
@@ -116,7 +118,13 @@ const populated = entries.filter(hasData);
     font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
+  }
+  .entry-date-link {
     color: var(--accent);
+    text-decoration: none;
+  }
+  .entry-date-link:hover {
+    text-decoration: underline;
   }
   .entry-summary {
     margin: 0 0 0.4rem;

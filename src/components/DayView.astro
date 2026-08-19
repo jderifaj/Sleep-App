@@ -1,0 +1,68 @@
+---
+import DateHeader from './DateHeader.astro';
+import FoodLog from './FoodLog';
+import NightActivity from './NightActivity';
+import Exercise from './Exercise';
+import SleepPattern from './SleepPattern';
+import Notes from './Notes';
+import { addDays, formatShortDate, todayKey } from '../lib/date';
+import { getEntry } from '../lib/sheets';
+
+interface Props {
+  dateKey: string;
+}
+
+const { dateKey } = Astro.props;
+const entry = await getEntry(dateKey);
+const isToday = dateKey === todayKey();
+const prev = addDays(dateKey, -1);
+const next = addDays(dateKey, 1);
+---
+
+<DateHeader date={dateKey} />
+
+<nav class="day-nav">
+  <a href={`/day/${prev}`} class="nav-link">← {formatShortDate(prev)}</a>
+  {!isToday && <a href="/" class="nav-link">Today</a>}
+  <a href={`/day/${next}`} class="nav-link">{formatShortDate(next)} →</a>
+</nav>
+
+<FoodLog client:load date={dateKey} initialValue={entry.food_log} />
+<NightActivity
+  client:load
+  date={dateKey}
+  initialActivity={entry.night_activity}
+  initialBedtime={entry.bedtime}
+/>
+<Exercise
+  client:load
+  date={dateKey}
+  initialExercised={entry.exercised}
+  initialActivity={entry.exercise_activity}
+  initialMinutes={entry.exercise_minutes}
+/>
+<SleepPattern
+  client:load
+  date={dateKey}
+  initialTrouble={entry.trouble_falling_asleep}
+  initialWoke={entry.woke_in_night}
+  initialWakeCount={entry.wake_count}
+/>
+<Notes client:load date={dateKey} initialValue={entry.notes} />
+
+<p style="text-align: center; margin: 0;">
+  <a href="/history" class="nav-link">View past entries →</a>
+</p>
+
+<style>
+  .day-nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .day-nav a:last-child {
+    text-align: right;
+  }
+</style>
