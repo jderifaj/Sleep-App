@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { listEntries } from '../lib/sheets';
+import { formatDateKey, formatTime } from '../lib/date';
+import type { DailyEntry } from '../lib/types';
+
+const entries = await listEntries();
+
+function summary(entry: DailyEntry): string[] {
+  const parts: string[] = [];
+  if (entry.bedtime) parts.push(`Bed at ${formatTime(entry.bedtime)}`);
+  if (entry.trouble_falling_asleep) parts.push('trouble falling asleep');
+  if (entry.woke_in_night) parts.push(`woke ${entry.wake_count}× in the night`);
+  if (entry.exercised) {
+    const detail = [entry.exercise_activity, entry.exercise_minutes ? `${entry.exercise_minutes} min` : '']
+      .filter(Boolean)
+      .join(', ');
+    parts.push(`exercised${detail ? ` — ${detail}` : ''}`);
+  }
+  return parts;
+}
+
+function hasData(entry: DailyEntry): boolean {
+  return Boolean(
+    entry.bedtime ||
+      entry.trouble_falling_asleep ||
+      entry.woke_in_night ||
+      entry.exercised ||
+      entry.food_log ||
+      entry.night_activity ||
+      entry.notes
+  );
+}
+
+const populated = entries.filter(hasData);
+---
+
+<BaseLayout title="Past Entries — Sleep Tracker">
+  <header class="masthead">
+    <h1>The Sleep Record</h1>
+    <p class="dateline-sub">A daily log of sleep, food, and exercise</p>
+  </header>
+
+  <p style="text-align: center; margin: 0;">
+    <a href="/" class="nav-link">← Today</a>
+  </p>
+
+  <div class="paper">
+    {populated.length === 0 && <p class="empty">No entries yet.</p>}
+    {
+      populated.map((entry) => (
+        <article class="entry">
+          <p class="entry-date">{formatDateKey(entry.date)}</p>
+          {summary(entry).length > 0 && <p class="entry-summary">{summary(entry).join(' · ')}</p>}
+          {entry.food_log && (
+            <p class="entry-field">
+              <span class="label">Food</span>
+              {entry.food_log}
+            </p>
+          )}
+          {entry.night_activity && (
+            <p class="entry-field">
+              <span class="label">Night</span>
+              {entry.night_activity}
+            </p>
+          )}
+          {entry.notes && (
+            <p class="entry-field">
+              <span class="label">Notes</span>
+              {entry.notes}
+            </p>
+          )}
+        </article>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .masthead {
+    text-align: center;
+    border-bottom: 3px double var(--text);
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.25rem;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
+  .masthead h1 {
+    font-size: 1.5rem;
+    letter-spacing: 0.03em;
+    font-weight: 700;
+    margin: 0;
+  }
+  .dateline-sub {
+    margin: 0.15rem 0 0;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .paper {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.25rem 1.25rem;
+  }
+  .entry {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .entry:last-child {
+    border-bottom: none;
+  }
+  .entry-date {
+    margin: 0 0 0.3rem;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+  .entry-summary {
+    margin: 0 0 0.4rem;
+    font-size: 0.95rem;
+  }
+  .entry-field {
+    margin: 0.3rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+  .entry-field .label {
+    font-weight: 700;
+    font-style: italic;
+    margin-right: 0.4rem;
+    white-space: nowrap;
+  }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 1.5rem 0;
+  }
+</style>

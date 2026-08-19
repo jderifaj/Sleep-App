@@ -5,6 +5,7 @@ import FoodLog from '../components/FoodLog';
 import NightActivity from '../components/NightActivity';
 import Exercise from '../components/Exercise';
 import SleepPattern from '../components/SleepPattern';
+import Notes from '../components/Notes';
 import { todayKey } from '../lib/date';
 import { getEntry } from '../lib/sheets';
 
@@ -28,4 +29,8 @@ const entry = await getEntry(dateKey);
     initialWoke={entry.woke_in_night}
     initialWakeCount={entry.wake_count}
   />
+  <Notes client:load initialValue={entry.notes} />
+  <p style="text-align: center; margin: 0;">
+    <a href="/history" class="nav-link">View past entries →</a>
+  </p>
 </BaseLayout>

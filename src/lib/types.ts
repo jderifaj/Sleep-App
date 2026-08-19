@@ -9,6 +9,7 @@ export interface DailyEntry {
   trouble_falling_asleep: boolean;
   woke_in_night: boolean;
   wake_count: number;
+  notes: string;
   last_updated: string;
 }
 
@@ -22,5 +23,6 @@ export const EMPTY_ENTRY: Omit<DailyEntry, 'date'> = {
   trouble_falling_asleep: false,
   woke_in_night: false,
   wake_count: 0,
+  notes: '',
   last_updated: '',
 };
